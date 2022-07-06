@@ -1,17 +1,14 @@
 from django.shortcuts import render
 from django.db.models import Q, F
-from store.models import Product
+from store.models import Product, OrderItem
 
 # Create your views here.
 # view -> request handler
 # request -> response
 def say_hello(request):
-    # Reading a related field which is collection in Product class
-    # It will create a query to inner join query
-    # values() return dict objects instead of Product objects
-    query_set = Product.objects.values('id', 'title', 'collection__title')
-
-    # values_list() return tuple object
-    query_set = Product.objects.values_list('id', 'title', 'collection__title')
+    # Select products that have been ordered and sort them by title
+    # __in is lookups type
+    query_set = Product.objects.filter(
+        id__in = OrderItem.objects.values('product_id').distinct()).order_by('title')
 
     return render(request, 'hello.html', {'name': 'Django Project', 'products': list(query_set)})
