@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 from store.models import Product
 
 # Create your views here.
 # view -> request handler
 # request -> response
 def say_hello(request):
-    product = Product.objects.get(pk=1)
-    # pk stands for primary key
-    # get method returns the actual object
+    try:
+        product = Product.objects.get(pk=0)
+        # pk stands for primary key
+    except ObjectDoesNotExist as e:
+        print(e)
 
     query_set = Product.objects.all()
     # Product.objects gives us a manager (interface to the db)
